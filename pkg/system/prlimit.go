@@ -21,6 +21,7 @@ import (
 	"bytes"
 	"context"
 	"os/exec"
+	"strings"
 	"syscall"
 	"time"
 	"unsafe"
@@ -97,6 +98,10 @@ func scanLinesWithCR(data []byte, atEOF bool) (advance int, token []byte, err er
 func processScanner(scanner *bufio.Scanner, buf *bytes.Buffer, done chan bool, callback func(string)) {
 	for scanner.Scan() {
 		line := scanner.Text()
+		//improve log for better readability:
+		if strings.HasPrefix(line, "qemu-img:"){
+			buf.WriteString("\n")
+		}
 		buf.WriteString(line)
 		if callback != nil {
 			callback(line)
